@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SaiyanHub — Login</title>
+  <link rel="icon" type="image/x-icon" href="../assets/logo_letras_blanco.png" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/login.js" defer></script>
+  </head>
+  <body>
+    <div id="alert-area" aria-live="polite"></div>
+
+    <main class="stage">
+      <div class="box">
+        <div class="left">
+          <div class="logo-wrapper" aria-hidden="true">
+            <img
+              src="../assets/logo.letras_blanco.png"
+              alt="SaiyanHub"
+              class="login-logo"
+            />
+          </div>
+        </div>
+        <div class="right">
+          <form
+            class="card"
+            action="../../private/proc/procesar_login.php"
+            method="post"
+          >
+            <h2>Acceder</h2>
+
+            <div class="form-group">
+              <label for="username" class="sr-only">Usuario</label>
+              <input
+                class="input"
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Usuario"
+                required
+                autocomplete="username"
+              />
+              <span id="errorUsuario" class="error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group field has-right-icon">
+              <label for="password" class="sr-only">Contraseña</label>
+
+              <div class="input-wrap">
+                <input
+                  class="input"
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Contraseña"
+                  required
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="eye-btn"
+                  aria-label="Mostrar contraseña"
+                  aria-pressed="false"
+                >
+                  <img src="../assets/eye-closed.png" alt="" />
+                </button>
+              </div>
+
+              <span id="errorPassword" class="error" aria-live="polite"></span>
+            </div>
+
+            <button class="submit" type="submit">Acceder</button>
+
+            <div class="help">
+              ¿Olvidaste tu contraseña? · ¿Necesitas ayuda?
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

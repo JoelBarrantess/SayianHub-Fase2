@@ -1,0 +1,540 @@
+:root {
+  --primary: #1f2937;
+  --accent: #0ea5a4;
+  --muted: #6b7280;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --blue: #3b82f6;
+  --red: #ef4444;
+}
+
+body.admin-page {
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(90deg, #ffffff 0%, #f3f4f6 100%);
+  border-bottom: 1px solid #e6e9ee;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.admin-header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  line-height: 1.05;
+}
+
+.admin-nav {
+  display: flex;
+  gap: .5rem;
+}
+.admin-nav .tab {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
+  transition: all .2s ease;
+}
+.admin-nav .tab:hover { background: #eef2f6; }
+.admin-nav .tab.active {
+  background: var(--accent);
+  color: white;
+}
+
+a,
+a:visited,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.admin-content { padding: 1.25rem; }
+.admin-section {
+  display: none;
+  background: var(--card);
+  padding: 1rem;
+  border-radius: .5rem;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.03);
+  margin-bottom: 1rem;
+}
+.admin-section.active { display: block; }
+.muted { color: var(--muted); margin-bottom: 1rem; }
+
+
+.table-wrap {
+  display: flex;
+  justify-content: center;        
+  align-items: flex-start;
+  overflow-x: auto;
+  padding: 2rem 1rem;            
+}
+
+.admin-table {
+  width: 90%;                     
+  max-width: 1300px;              
+  margin: 0 auto;                
+  border-collapse: collapse;
+  font-size: 1rem;               
+  background: var(--card);
+  border-radius: .75rem;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.admin-table:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+.admin-table thead th {
+  background: linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%);
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid #e5e7eb;
+  color: var(--primary);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.admin-table tbody td {
+  padding: .9rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+}
+
+.admin-table tbody tr:hover {
+  background: #f9fafb;
+  transition: background 0.2s ease;
+}
+
+.actions {
+  display: flex;
+  gap: .5rem;
+}
+
+.btn-simple {
+  padding: .4rem .6rem;
+  border-radius: .5rem;
+  border: 1px solid #e6e9ee;
+  background: white;
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  text-decoration: none;
+  transition: all .18s ease;
+  min-height: 36px;
+}
+
+.btn-simple.btn-edit {
+  border-color: rgba(59,130,246,0.35);
+  color: var(--blue);
+  background: rgba(59,130,246,0.05);
+}
+.btn-simple.btn-edit:hover,
+.btn-simple.btn-edit:focus {
+  background: var(--blue);
+  color: #fff;
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: 0 6px 16px rgba(59,130,246,0.15);
+}
+
+.btn-simple.btn-delete {
+  border-color: rgba(239,68,68,0.35);
+  color: var(--red);
+  background: rgba(239,68,68,0.05);
+}
+.btn-simple.btn-delete:hover,
+.btn-simple.btn-delete:focus {
+  background: var(--red);
+  color: #fff;
+  border-color: rgba(239,68,68,0.3);
+  box-shadow: 0 6px 16px rgba(239,68,68,0.15);
+}
+
+.btn-simple.btn-edit,
+.btn-simple.btn-delete {
+  min-width: 100px;         
+  height: 36px;             
+  padding: .4rem .8rem;     
+  text-align: center;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.btn-simple.btn-edit span,
+.btn-simple.btn-delete span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+.btn-simple svg,
+.btn-simple i {
+  color: inherit;
+  fill: currentColor;
+  stroke: currentColor;
+  margin-right: .35rem;
+}
+
+.btn-simple.icon-only {
+  padding: .45rem;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.btn-volver {
+  background: #000000;
+  color: #fff !important; 
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.btn-volver:hover {
+  background: #212529;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  color: #fff !important;
+}
+
+.btn-volver,
+.btn-volver * {
+  color: #fff !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  text-decoration: none !important;
+}
+
+@media (max-width:720px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .5rem;
+    padding: .75rem;
+  }
+
+  .brand {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .75rem;
+    margin-bottom: .25rem;
+  }
+
+  .admin-nav {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding-bottom: .25rem;
+    flex-wrap: wrap;
+  }
+
+  .admin-nav .tab,
+  .admin-nav .tab-link {
+    display: inline-block;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    padding: .45rem .65rem;
+    margin: 0;
+  }
+
+  .admin-nav .btn-volver {
+    order: 99;
+    flex-basis: 100%; 
+    width: 100%;
+    margin-left: 0;
+    display: inline-flex;
+    justify-content: center;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .admin-table,
+  .admin-table:hover,
+  .admin-table thead th,
+  .admin-table tbody tr {
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .admin-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+    border-radius: 0.5rem;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .admin-table thead { display: none; }
+
+  .admin-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 100px; 
+    grid-template-rows: auto auto;    
+    gap: 8px; 
+    margin-bottom: .6rem;
+    border-radius: .5rem;
+    border: 1px solid #eef2f6;
+    background: var(--card);
+    padding: 0;
+    overflow: visible;
+  }
+
+  .admin-table tbody td:nth-child(1),
+  .admin-table tbody td:nth-child(2) {
+    display: none;
+  }
+
+  .admin-table tbody td:nth-child(3) {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    padding: .6rem .9rem;
+    box-sizing: border-box;
+  }
+  .admin-table tbody td:nth-child(4) {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    padding: .4rem .9rem .6rem .9rem;
+    box-sizing: border-box;
+  }
+
+  .admin-table tbody td:nth-child(3)::before,
+  .admin-table tbody td:nth-child(4)::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: var(--muted);
+    margin-right: .4rem;
+    white-space: nowrap;
+  }
+  .admin-table tbody td:nth-child(3) .value,
+  .admin-table tbody td:nth-child(4) .value {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .admin-table tbody td.actions-cell,
+  .admin-table tbody td:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 92px;
+    padding: .36rem;
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    align-items: stretch;  
+    justify-content: center;
+    border-left: 1px solid rgba(0,0,0,0.03);
+    background: transparent;
+    box-sizing: border-box;
+  }
+
+  .admin-table tbody td.actions-cell a.btn-simple,
+  .admin-table tbody td.actions-cell button.btn-simple,
+  .admin-table tbody td.actions-cell .btn-simple,
+  .admin-table tbody td:last-child a.btn-simple,
+  .admin-table tbody td:last-child button.btn-simple,
+  .admin-table tbody td:last-child .btn-simple,
+  .admin-table tbody td.actions-cell .delete-user-form .btn-simple {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box !important;
+    width: 100% !important;       
+    min-width: 0 !important;      
+    max-width: 100% !important;
+    height: 32px !important;     
+    padding: .22rem .38rem !important; 
+    font-size: .9rem !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    border-radius: .45rem !important;
+  }
+
+  .admin-table tbody td.actions-cell .delete-user-form {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+  .admin-table tbody td.actions-cell .delete-user-form .btn-simple {
+    width: 100% !important;
+  }
+
+  @media (max-width:360px) {
+    .admin-table tbody td.actions-cell,
+    .admin-table tbody td:last-child { width: 76px; padding: .28rem; }
+    .admin-table tbody td.actions-cell a.btn-simple,
+    .admin-table tbody td.actions-cell button.btn-simple,
+    .admin-table tbody td.actions-cell .btn-simple,
+    .admin-table tbody td:last-child a.btn-simple,
+    .admin-table tbody td:last-child button.btn-simple,
+    .admin-table tbody td:last-child .btn-simple {
+      height: 30px !important;
+      padding: .18rem .32rem !important;
+      font-size: .82rem !important;
+    }
+  }
+
+  .admin-header h1 {
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+
+}
+
+@media (max-width:360px) {
+  .admin-table tbody td.actions-cell,
+  .admin-table tbody td:last-child {
+    flex: 0 0 90px;
+    width: 90px;
+    padding: .4rem;
+  }
+  .admin-table tbody td {
+    padding: .45rem .6rem;
+  }
+}
+
+@media (max-width:360px) {
+  .admin-header { padding: 8px 10px; gap: .5rem; }
+  .brand-logo { width: 36px; height: 36px; }
+  .admin-header h1 { font-size: 0.95rem; margin-left: 6px; }
+
+  .admin-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; gap: .35rem; padding-bottom: .2rem; }
+  .admin-nav .tab, .admin-nav .tab-link {
+    padding: .32rem .5rem;
+    font-size: .88rem;
+    white-space: nowrap;
+  }
+
+  .admin-nav .btn-volver {
+    order: 99;
+    flex-basis: 100%;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: .95rem;
+    box-shadow: none;
+    margin-top: 6px;
+  }
+
+  .admin-table, .admin-table:hover { box-shadow: none; transform: none; }
+  .table-wrap { padding: 12px 8px; }
+  .admin-table { width: 100% !important; max-width: 100% !important; font-size: .95rem; border-radius: .5rem; }
+
+  .admin-table thead { display: none; }
+  .admin-table tbody tr {
+    display: block;
+    margin-bottom: .6rem;
+    border-radius: .5rem;
+    border: 1px solid #eef2f6;
+    padding: .35rem 0;
+    background: var(--card);
+  }
+  .admin-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .45rem .75rem;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-table tbody td:nth-child(1),
+  .admin-table tbody td:nth-child(2) { display: none; }
+
+  .admin-table tbody td:last-child { justify-content: flex-end; gap: .4rem; padding-right: .75rem; }
+  .btn-simple { min-width: 72px; height: 34px; padding: .28rem .5rem; font-size: .88rem; }
+  .btn-simple.btn-edit, .btn-simple.btn-delete { min-width: 72px; }
+
+  .btn-simple svg, .btn-simple i { margin-right: .25rem; font-size: .95rem; }
+
+  .btn-simple.btn-edit, .btn-simple.btn-delete { box-shadow: none; }
+}
+
+.admin-table tbody td:last-child,
+.admin-table .actions {
+  display: flex;
+  gap: .5rem;
+  align-items: center; 
+}
+
+.delete-user-form {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.admin-table tbody td > a.btn-simple,
+.admin-table tbody td > button.btn-simple,
+.delete-user-form .btn-simple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  height: 36px;           
+  line-height: 1;
+  box-sizing: border-box;
+  padding: .35rem .6rem; 
+  margin: 0;
+}
+
+.delete-user-form .btn-simple::-moz-focus-inner,
+.admin-table tbody .btn-simple::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.admin-table tbody td > a.btn-simple {
+  text-decoration: none;
+}
