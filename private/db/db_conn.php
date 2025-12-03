@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Europe/Madrid');
 
-$host = 'localhost';
+$host = 'localhost:3308';
 $user = 'root';
 $pass = '';
 $db = 'db_saiyan_hub';
