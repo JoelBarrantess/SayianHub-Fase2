@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     apellidos VARCHAR(100),
     usuario VARCHAR(50) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,  
-    rol ENUM('camarero', 'admin', 'gerent', 'manteniment') DEFAULT 'camarero'
+    rol ENUM('camarero', 'admin', 'gerente', 'mantenimiento') DEFAULT 'camarero'
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS salas (
@@ -85,8 +85,8 @@ INSERT IGNORE INTO usuarios (nombre, apellidos, usuario, contrasena, rol) VALUES
 ('Luis','García','luis','$2y$10$OxEhWFKqvuQVoZGD7yZeY.63YOCa.OWZwSnn0kyzpa.z/p/rxNh1m','camarero'),
 ('María','Santos','maria','$2y$10$6nH41f65nyGldf9pdJIqme0vDW87nhJuTosmng3u0IZ9pMqgeMF2S','camarero'),
 ('Carlos','Ruiz','carlos','$2y$10$Thc3K1GZEXqk9wVHANVRc.aXkMLn45uLy9YcmFSw.RFv3FI4p9knW','camarero'),
-('Gerente','General','gerente','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','gerent'),
-('Mantenimiento','Staff','mante','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','manteniment');
+('Gerente','General','gerente','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','gerente'),
+('Mantenimiento','Staff','mante','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','mantenimiento');
 
 -- Salas (Fase 1)
 INSERT IGNORE INTO salas (nombre_sala, tipo, capacidad_total) VALUES

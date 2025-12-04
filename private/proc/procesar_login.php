@@ -32,13 +32,17 @@ try {
     $_SESSION['id_usuario'] = $user['id_usuario'];
     $_SESSION['username']   = $user['usuario'];
     $_SESSION['nombre']     = $user['nombre'] ?? '';
-    $_SESSION['rol']        = $user['rol'] ?? 'user';
+    $_SESSION['rol']        = $user['rol'] ?? 'camarero';
 
-    $rol = ($_SESSION['rol']);
-    if ($rol === 'admin') {
+    $rol = $_SESSION['rol'];
+
+    // Lógica de redirección simple según el rol
+    if ($rol === 'admin' || $rol === 'gerente' || $rol === 'mantenimiento') {
+        // Roles de gestión van al Dashboard
         header('Location: ../../public/pages/dashboard.php');
         exit;
     } else {
+        // Camareros y otros van a la operativa diaria (Reservas/Salas)
         header('Location: ../../public/pages/room_selection.php');
         exit;
     }
