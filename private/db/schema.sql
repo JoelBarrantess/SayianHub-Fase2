@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     apellidos VARCHAR(100),
     usuario VARCHAR(50) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,  
-    rol ENUM('camarero', 'admin', 'gerent', 'manteniment') DEFAULT 'camarero'
+    rol ENUM('camarero', 'admin', 'gerente', 'mantenimiento') DEFAULT 'camarero'
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS salas (
@@ -52,13 +52,26 @@ CREATE TABLE IF NOT EXISTS ocupaciones (
 -- FASE 2 NEW TABLES
 -- --------------------------------------------------------
 
+-- Tabla de uploads para gestionar archivos en BD
+CREATE TABLE IF NOT EXISTS uploads (
+    id_upload INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    path VARCHAR(255) NOT NULL, -- ruta relativa dentro de private/uploads o similar
+    mime VARCHAR(100),
+    size INT, -- bytes
+    uploaded_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (uploaded_by) REFERENCES usuarios(id_usuario)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS recursos (
     id_recurso INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     tipo ENUM('sala', 'mesa', 'silla', 'otro') NOT NULL,
     capacidad INT DEFAULT 0,
-    imagen VARCHAR(255),
-    estado ENUM('disponible', 'mantenimiento', 'baja') DEFAULT 'disponible'
+    id_upload INT NULL, -- referencia al archivo en tabla uploads
+    estado ENUM('disponible', 'mantenimiento', 'baja') DEFAULT 'disponible',
+    FOREIGN KEY (id_upload) REFERENCES uploads(id_upload)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS reservas (
@@ -85,8 +98,8 @@ INSERT IGNORE INTO usuarios (nombre, apellidos, usuario, contrasena, rol) VALUES
 ('Luis','García','luis','$2y$10$OxEhWFKqvuQVoZGD7yZeY.63YOCa.OWZwSnn0kyzpa.z/p/rxNh1m','camarero'),
 ('María','Santos','maria','$2y$10$6nH41f65nyGldf9pdJIqme0vDW87nhJuTosmng3u0IZ9pMqgeMF2S','camarero'),
 ('Carlos','Ruiz','carlos','$2y$10$Thc3K1GZEXqk9wVHANVRc.aXkMLn45uLy9YcmFSw.RFv3FI4p9knW','camarero'),
-('Gerente','General','gerente','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','gerent'),
-('Mantenimiento','Staff','mante','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','manteniment');
+('Gerente','General','gerente','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','gerente'),
+('Mantenimiento','Staff','mante','$2y$10$9p1Hr8/yzaG5HR051ZQDX.FORM750axFXkPt5eGcYeQZRuZYjfEiS','mantenimiento');
 
 -- Salas (Fase 1)
 INSERT IGNORE INTO salas (nombre_sala, tipo, capacidad_total) VALUES
@@ -101,23 +114,40 @@ INSERT IGNORE INTO salas (nombre_sala, tipo, capacidad_total) VALUES
 ('Privada 4','privada',12);
 
 -- Recursos (Fase 2)
-INSERT IGNORE INTO recursos (nombre, tipo, capacidad, estado, imagen) VALUES
-('Sala Terraza 1', 'sala', 30, 'disponible', 'img/terraza1.jpg'),
-('Sala Terraza 2', 'sala', 20, 'disponible', 'img/terraza2.jpg'),
-('Sala Comedor Principal', 'sala', 50, 'disponible', 'img/comedor1.jpg'),
-('Sala Comedor Secundario', 'sala', 30, 'mantenimiento', 'img/comedor2.jpg'),
-('Sala Privada VIP', 'sala', 10, 'disponible', 'img/vip1.jpg'),
-('Sala Reuniones', 'sala', 12, 'disponible', 'img/reuniones.jpg'),
-('Mesa T1-01', 'mesa', 4, 'disponible', 'img/mesa_std.jpg'),
-('Mesa T1-02', 'mesa', 4, 'disponible', 'img/mesa_std.jpg'),
-('Mesa T1-03', 'mesa', 2, 'disponible', 'img/mesa_small.jpg'),
-('Mesa C1-01', 'mesa', 6, 'disponible', 'img/mesa_large.jpg'),
-('Mesa C1-02', 'mesa', 6, 'disponible', 'img/mesa_large.jpg'),
-('Mesa VIP-01', 'mesa', 8, 'disponible', 'img/mesa_vip.jpg'),
-('Mesa VIP-02', 'mesa', 8, 'mantenimiento', 'img/mesa_vip.jpg'),
-('Proyector 4K', 'otro', 0, 'disponible', 'img/proyector.jpg'),
-('Equipo de Sonido', 'otro', 0, 'disponible', 'img/sonido.jpg'),
-('Pizarra Digital', 'otro', 0, 'baja', 'img/pizarra.jpg');
+-- Seed de uploads básico para recursos preexistentes
+INSERT IGNORE INTO uploads (id_upload, filename, path, mime, size, uploaded_by)
+VALUES
+    (1, 'terraza1.jpg', 'img/terraza1.jpg', 'image/jpeg', NULL, NULL),
+    (2, 'terraza2.jpg', 'img/terraza2.jpg', 'image/jpeg', NULL, NULL),
+    (3, 'comedor1.jpg', 'img/comedor1.jpg', 'image/jpeg', NULL, NULL),
+    (4, 'comedor2.jpg', 'img/comedor2.jpg', 'image/jpeg', NULL, NULL),
+    (5, 'vip1.jpg', 'img/vip1.jpg', 'image/jpeg', NULL, NULL),
+    (6, 'reuniones.jpg', 'img/reuniones.jpg', 'image/jpeg', NULL, NULL),
+    (7, 'mesa_std.jpg', 'img/mesa_std.jpg', 'image/jpeg', NULL, NULL),
+    (8, 'mesa_small.jpg', 'img/mesa_small.jpg', 'image/jpeg', NULL, NULL),
+    (9, 'mesa_large.jpg', 'img/mesa_large.jpg', 'image/jpeg', NULL, NULL),
+    (10, 'mesa_vip.jpg', 'img/mesa_vip.jpg', 'image/jpeg', NULL, NULL),
+    (11, 'proyector.jpg', 'img/proyector.jpg', 'image/jpeg', NULL, NULL),
+    (12, 'sonido.jpg', 'img/sonido.jpg', 'image/jpeg', NULL, NULL),
+    (13, 'pizarra.jpg', 'img/pizarra.jpg', 'image/jpeg', NULL, NULL);
+
+INSERT IGNORE INTO recursos (nombre, tipo, capacidad, estado, id_upload) VALUES
+('Sala Terraza 1', 'sala', 30, 'disponible', 1),
+('Sala Terraza 2', 'sala', 20, 'disponible', 2),
+('Sala Comedor Principal', 'sala', 50, 'disponible', 3),
+('Sala Comedor Secundario', 'sala', 30, 'mantenimiento', 4),
+('Sala Privada VIP', 'sala', 10, 'disponible', 5),
+('Sala Reuniones', 'sala', 12, 'disponible', 6),
+('Mesa T1-01', 'mesa', 4, 'disponible', 7),
+('Mesa T1-02', 'mesa', 4, 'disponible', 7),
+('Mesa T1-03', 'mesa', 2, 'disponible', 8),
+('Mesa C1-01', 'mesa', 6, 'disponible', 9),
+('Mesa C1-02', 'mesa', 6, 'disponible', 9),
+('Mesa VIP-01', 'mesa', 8, 'disponible', 10),
+('Mesa VIP-02', 'mesa', 8, 'mantenimiento', 10),
+('Proyector 4K', 'otro', 0, 'disponible', 11),
+('Equipo de Sonido', 'otro', 0, 'disponible', 12),
+('Pizarra Digital', 'otro', 0, 'baja', 13);
 
 -- Reservas (Seed Data)
 INSERT IGNORE INTO reservas (id_recurso, id_usuario, fecha, franja_horaria, estado) VALUES

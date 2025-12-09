@@ -1,0 +1,220 @@
+:root {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --primary: #1f2937;
+    --accent: #0ea5a4;
+    --muted: #6b7280;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --blue: #3b82f6;
+    --red: #ef4444;
+    background: var(--bg);
+    color: var(--primary);
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--bg);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: var(--primary);
+}
+
+/* --- Header Styles (Copied from admin-salas.css for consistency) --- */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(90deg, #ffffff 0%, #f3f4f6 100%);
+    border-bottom: 1px solid #e6e9ee;
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.admin-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.admin-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.admin-nav .tab,
+.admin-nav .tab-link {
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.admin-nav .tab:hover,
+.admin-nav .tab-link:hover {
+    background: #eef2f6;
+}
+
+.admin-nav .tab.active,
+.admin-nav .tab-link.active {
+    color: rgb(0, 0, 0);
+    background: #eef2f6;
+}
+
+.admin-nav .btn-volver {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+}
+
+.admin-nav .btn-volver:hover {
+    background: #212529;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    color: #fff !important;
+}
+
+/* --- Resource Specific Styles --- */
+.recursos-wrapper {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px 28px 60px;
+}
+
+.resource-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    background-color: #e5e7eb;
+}
+
+.card-resource {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 0.75rem;
+    background: var(--card);
+    overflow: hidden;
+}
+
+.card-resource:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.status-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.status-disponible {
+    background-color: #10b981;
+}
+
+.status-mantenimiento {
+    background-color: #f59e0b;
+    color: #fff;
+}
+
+.status-baja {
+    background-color: #ef4444;
+}
+
+.filter-card {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 0.75rem;
+    background: var(--card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Form Styles */
+.form-card {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 0.75rem;
+    background: var(--card);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+    background: #1f2937;
+    color: white;
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 1rem 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .brand {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .admin-header h1 {
+        font-size: 1.375rem;
+    }
+
+    .admin-nav {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .admin-nav .tab,
+    .admin-nav .tab-link,
+    .admin-nav .btn-volver {
+        width: 100%;
+        text-align: center;
+    }
+
+    .recursos-wrapper {
+        padding: 24px 16px 40px;
+    }
+}
