@@ -76,8 +76,8 @@ unset($sala);
 
 
     <nav class="admin-nav" aria-label="Navegación de administración">
+      <a class="tab tab-link" href="../recursos/crud_recursos.php" aria-current="page">Gestión de recursos</a>
       <a class="tab tab-link" href="../users/admin.php">Gestión de usuarios</a>
-
       <a class="tab tab-link active" href="./admin_salas.php" aria-current="page">Salas y Mesas</a>
       <a class="tab tab-link" href="../../logs.php">Historial</a>
       <a href="../../dashboard.php" class="btn btn-volver">
