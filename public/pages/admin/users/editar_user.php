@@ -73,28 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Editar usuario — SaiyanHub</title>
     <link rel="stylesheet" href="../../../css/edi_user.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .field-error {
-            color: #ef4444;
-            font-size: 0.9rem;
-            margin-top: .25rem;
-            display: none;
-        }
-
-        .close-link {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .close-link:hover {
-            color: #000;
-        }
-    </style>
+    <link rel="stylesheet" href="../../../css/styles.css">
 </head>
 
 <body>
@@ -104,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
             <h2>Editar usuario</h2>
 
             <?php if (!empty($error)): ?>
-                <div class="alert-error"><?= $error, ENT_QUOTES, 'UTF-8' ?></div>
+                <div class="alert-error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
             <?php endif; ?>
 
             <form id="form-usuario" method="post" action="editar_user.php">
@@ -149,26 +128,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
                 <div id="errorPassword2" class="field-error" data-for="password2" aria-live="polite"></div>
 
                 <div class="actions" style="margin-top:1rem;">
-                    <button id="btn-submit" type="submit" class="submit" disabled>Guardar cambios</button>
+                    <button id="btn-submit" type="submit" class="submit">Guardar cambios</button>
                 </div>
             </form>
         </div>
     </main>
     <!-- incluir script de validación -->
-    <script src="../../../js/admin_user/edi_user.js"></script>
-    <?php
-    // SweetAlerts de feedback usando sesiones establecidas por procesar_editar_usuario.php
-    if (isset($_SESSION['edit_user_success'])) {
-        $msg = $_SESSION['edit_user_success'];
-        unset($_SESSION['edit_user_success']);
-        echo "<script>Swal.fire({icon:'success', title:'Usuario guardado', text: '" . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . "', timer:1500, showConfirmButton:false});</script>";
-    }
-    if (isset($_SESSION['edit_user_error'])) {
-        $msg = $_SESSION['edit_user_error'];
-        unset($_SESSION['edit_user_error']);
-        echo "<script>Swal.fire({icon:'error', title:'Error al guardar', text: '" . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . "'});</script>";
-    }
-    ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../../../js/admin_user/edi_user.js"></script>
+        <script src="../../../js/admin_user/alerts.js"></script>
+        <?php
+            // Pasar mensajes a data-attributes para que los lea el JS externo
+            $successMsg = '';
+            $errorMsg = '';
+            if (isset($_SESSION['edit_user_success'])) {
+                $successMsg = htmlspecialchars($_SESSION['edit_user_success'], ENT_QUOTES, 'UTF-8');
+                unset($_SESSION['edit_user_success']);
+            }
+            if (isset($_SESSION['edit_user_error'])) {
+                $errorMsg = htmlspecialchars($_SESSION['edit_user_error'], ENT_QUOTES, 'UTF-8');
+                unset($_SESSION['edit_user_error']);
+            }
+        ?>
+        <div id="feedback-messages" data-success="<?= $successMsg ?>" data-error="<?= $errorMsg ?>" style="display:none;"></div>
 </body>
 
 </html>

@@ -12,13 +12,13 @@ $password2 = $_POST['password2'] ?? '';
 
 if ($id <= 0) {
     $_SESSION['edit_user_error'] = 'ID de usuario inválido.';
-    header('Location: ../../public/pages/admin/users/admin.php');
+    header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
     exit;
 }
 
 if ($usuario === '') {
     $_SESSION['edit_user_error'] = 'El nombre de usuario no puede estar vacío.';
-    header('Location: ../../public/pages/admin/users/admin.php');
+    header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
     exit;
 }
 
@@ -26,7 +26,7 @@ if ($usuario === '') {
 $rolesPermitidos = ['camarero','admin','gerente','mantenimiento'];
 if (!in_array($rol, $rolesPermitidos, true)) {
     $_SESSION['edit_user_error'] = 'Rol inválido.';
-    header('Location: ../../public/pages/admin/users/admin.php');
+    header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
     exit;
 }
 
@@ -37,7 +37,7 @@ try {
     $stmt->execute([':usuario' => $usuario, ':id' => $id]);
     if ($stmt->fetch(PDO::FETCH_ASSOC)) {
         $_SESSION['edit_user_error'] = 'El nombre de usuario ya está en uso.';
-        header('Location: ../../public/pages/admin/users/admin.php');
+        header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
         exit;
     }
 
@@ -45,7 +45,7 @@ try {
     if ($password !== '' || $password2 !== '') {
         if ($password !== $password2) {
             $_SESSION['edit_user_error'] = 'Las contraseñas no coinciden.';
-            header('Location: ../../public/pages/admin/users/admin.php');
+            header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
             exit;
         }
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -79,5 +79,5 @@ try {
     $_SESSION['edit_user_error'] = 'Error de BD: ' . $e->getMessage();
 }
 
-header('Location: ../../public/pages/admin/users/admin.php');
+header('Location: /sayianhub_fase2/public/pages/admin/users/admin.php');
 exit;
