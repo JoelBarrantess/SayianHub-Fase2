@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Editar usuario — SaiyanHub</title>
     <link rel="stylesheet" href="../../../css/edi_user.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .field-error {
             color: #ef4444;
@@ -106,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
                 <div class="alert-error"><?= $error, ENT_QUOTES, 'UTF-8' ?></div>
             <?php endif; ?>
 
-            <form method="post" action="editar_user.php">
+            <form id="form-usuario" method="post" action="editar_user.php">
                 <input type="hidden" name="id_usuario" value="<?= isset($userData['id_usuario']) ? $userData['id_usuario'] : '' ?>">
 
                 <label class="form-row">Usuario (login)
@@ -128,6 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
                     <select id="rol" class="select" name="rol">
                         <option value="camarero" <?= (isset($userData['rol']) && $userData['rol'] === 'camarero') ? 'selected' : '' ?>>Camarero</option>
                         <option value="admin" <?= (isset($userData['rol']) && $userData['rol'] === 'admin') ? 'selected' : '' ?>>Admin</option>
+                        <option value="gerente" <?= (isset($userData['rol']) && $userData['rol'] === 'gerente') ? 'selected' : '' ?>>Gerente</option>
+                        <option value="mantenimiento" <?= (isset($userData['rol']) && $userData['rol'] === 'mantenimiento') ? 'selected' : '' ?>>Mantenimiento</option>
                     </select>
                 </label>
                 <div id="errorRol" class="field-error" data-for="rol" aria-live="polite"></div>
@@ -146,13 +149,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($error)) {
                 <div id="errorPassword2" class="field-error" data-for="password2" aria-live="polite"></div>
 
                 <div class="actions" style="margin-top:1rem;">
-                    <button type="submit" class="submit">Guardar cambios</button>
+                    <button id="btn-submit" type="submit" class="submit" disabled>Guardar cambios</button>
                 </div>
             </form>
         </div>
     </main>
     <!-- incluir script de validación -->
     <script src="../../../js/admin_user/edi_user.js"></script>
+    <?php
+    // SweetAlerts de feedback usando sesiones establecidas por procesar_editar_usuario.php
+    if (isset($_SESSION['edit_user_success'])) {
+        $msg = $_SESSION['edit_user_success'];
+        unset($_SESSION['edit_user_success']);
+        echo "<script>Swal.fire({icon:'success', title:'Usuario guardado', text: '" . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . "', timer:1500, showConfirmButton:false});</script>";
+    }
+    if (isset($_SESSION['edit_user_error'])) {
+        $msg = $_SESSION['edit_user_error'];
+        unset($_SESSION['edit_user_error']);
+        echo "<script>Swal.fire({icon:'error', title:'Error al guardar', text: '" . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . "'});</script>";
+    }
+    ?>
 </body>
 
 </html>

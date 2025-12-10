@@ -18,7 +18,15 @@ if ($id <= 0) {
 
 if ($usuario === '') {
     $_SESSION['edit_user_error'] = 'El nombre de usuario no puede estar vacío.';
-    header('Location: ../../public/pages/admin/admin.php');
+    header('Location: ../../public/pages/admin/users/admin.php');
+    exit;
+}
+
+// Validar rol permitido
+$rolesPermitidos = ['camarero','admin','gerente','mantenimiento'];
+if (!in_array($rol, $rolesPermitidos, true)) {
+    $_SESSION['edit_user_error'] = 'Rol inválido.';
+    header('Location: ../../public/pages/admin/users/admin.php');
     exit;
 }
 
@@ -71,5 +79,5 @@ try {
     $_SESSION['edit_user_error'] = 'Error de BD: ' . $e->getMessage();
 }
 
-header('Location: admin.php');
+header('Location: ../../public/pages/admin/users/admin.php');
 exit;
