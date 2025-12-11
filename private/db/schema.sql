@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS mesas (
     id_sala INT NOT NULL,
     nombre_mesa VARCHAR(20) NOT NULL,
     num_sillas INT NOT NULL,
-    estado ENUM('libre', 'ocupada') DEFAULT 'libre',
+    estado ENUM('libre', 'ocupada', 'reservada') DEFAULT 'libre',
     FOREIGN KEY (id_sala) REFERENCES salas(id_sala)
 ) ENGINE=InnoDB;
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS sillas (
     id_silla INT AUTO_INCREMENT PRIMARY KEY,
     id_mesa INT NOT NULL,
     numero_silla INT NOT NULL,
-    estado ENUM('libre', 'ocupada') DEFAULT 'libre',
+    estado ENUM('libre', 'ocupada', 'reservada') DEFAULT 'libre',
     FOREIGN KEY (id_mesa) REFERENCES mesas(id_mesa)
 ) ENGINE=InnoDB;
 
