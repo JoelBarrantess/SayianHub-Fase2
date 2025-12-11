@@ -5,10 +5,15 @@ $errores = [];
 $formSala = ['nombre' => ''];
 $formMesas = [];
 $procesado = false;
-$estadosPermitidos = ['libre', 'ocupada']; 
+$estadosPermitidos = ['libre', 'ocupada', 'reservada']; 
 
 if (!isset($conn) || !$conn) {
-    $errores['internal'] = 'Sin conexión a la base de datos.';
+    // Crear conexión si no existe
+    try {
+        $conn = isset($host) ? connection($host, $user, $pass, $db) : null;
+    } catch (Throwable $e) {
+        $errores['internal'] = 'Sin conexión a la base de datos.';
+    }
 }
 
 if (!isset($salaId) || !(int)$salaId) {
@@ -150,10 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errores)) {
                         if ($aEliminar) {
                             $ids = array_column($aEliminar, 'id_silla');
                             $placeholders = implode(',', array_fill(0, count($ids), '?'));
-                            
-                            $stmtDelOcupacionesSilla = $conn->prepare("DELETE FROM ocupaciones WHERE id_silla IN ($placeholders)");
-                            $stmtDelOcupacionesSilla->execute($ids);
-
+                            // La tabla ocupaciones no referencia id_silla según el esquema,
+                            // por lo que solo eliminamos sillas.
                             $stmtDel = $conn->prepare("DELETE FROM sillas WHERE id_silla IN ($placeholders)");
                             $stmtDel->execute($ids);
                         }
