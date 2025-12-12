@@ -72,6 +72,11 @@ require_once '../../private/proc/sala_detalles_process.php';
                             <p class="mesa-capacidad">
                                 <?= $mesa['sillas_ocupadas'] ?>/<?= $num_sillas ?> ocupadas
                             </p>
+                            <?php if (!$ocupada): ?>
+                            <a href="reservas/reservar.php?id_mesa=<?= (int)$mesa['id_mesa'] ?>" class="btn btn-sm btn-outline-primary" title="Reservar esta mesa">
+                                <i class="bi bi-calendar-plus"></i> Reservar
+                            </a>
+                            <?php endif; ?>
                         </div>
 
                         <?php

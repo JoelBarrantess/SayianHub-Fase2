@@ -10,20 +10,23 @@ if (!isset($_SESSION['id_usuario'])) {
 $conn = connection($host, $user, $pass, $db);
 
 $id_usuario = (int)$_SESSION['id_usuario'];
-$id_sala = (int)($_POST['id_sala'] ?? 0);
 $id_mesa = (int)($_POST['id_mesa'] ?? 0);
 $fecha = trim($_POST['fecha'] ?? '');
 $hora_inicio = trim($_POST['hora_inicio'] ?? '');
-$hora_fin = trim($_POST['hora_fin'] ?? '');
 $nombre_cliente = trim($_POST['nombre_cliente'] ?? '');
 $observaciones = trim($_POST['observaciones'] ?? '');
 
-if ($id_sala <= 0 || $id_mesa <= 0 || $fecha === '' || $hora_inicio === '' || $hora_fin === '') {
+if ($id_mesa <= 0 || $fecha === '' || $hora_inicio === '') {
   header('Location: ../../public/pages/reservas/reservar.php?status=error');
   exit;
 }
 
 try {
+  // Calcular hora_fin fija de 1h30min
+  $dtStart = DateTime::createFromFormat('H:i', $hora_inicio);
+  if (!$dtStart) { header('Location: ../../public/pages/reservas/reservar.php?status=error'); exit; }
+  $dtEnd = clone $dtStart; $dtEnd->modify('+90 minutes');
+  $hora_fin = $dtEnd->format('H:i');
   // Comprobar conflicto: misma mesa, misma fecha, solape horario
   $stmt = $conn->prepare(
     "SELECT COUNT(*) FROM reservas 

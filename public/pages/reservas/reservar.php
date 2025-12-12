@@ -9,17 +9,25 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $conn = connection($host, $user, $pass, $db);
 
-// Obtener salas y mesas activas para selector
-$salas = $conn->query("SELECT id_sala, nombre_sala FROM salas ORDER BY nombre_sala")->fetchAll(PDO::FETCH_ASSOC);
-$mesas = $conn->query("SELECT id_mesa, id_sala, nombre_mesa, num_sillas FROM mesas ORDER BY id_sala, nombre_mesa")->fetchAll(PDO::FETCH_ASSOC);
-
-// Mapa de mesas por sala
-$mesasPorSala = [];
-foreach ($mesas as $m) {
-  $sid = (int)$m['id_sala'];
-  if (!isset($mesasPorSala[$sid])) $mesasPorSala[$sid] = [];
-  $mesasPorSala[$sid][] = $m;
+// Mesa seleccionada desde la página de salas
+$id_mesa = (int)($_GET['id_mesa'] ?? 0);
+if ($id_mesa <= 0) {
+  header('Location: ../salas.php');
+  exit;
 }
+
+$stmtM = $conn->prepare("SELECT m.id_mesa, m.nombre_mesa, m.id_sala, s.nombre_sala FROM mesas m JOIN salas s ON s.id_sala=m.id_sala WHERE m.id_mesa=:id");
+$stmtM->execute([':id' => $id_mesa]);
+$mesa = $stmtM->fetch(PDO::FETCH_ASSOC);
+if (!$mesa) {
+  header('Location: ../salas.php');
+  exit;
+}
+
+// Reservas existentes para esta mesa (fecha actual en adelante)
+$stmtR = $conn->prepare("SELECT id_reserva, fecha, franja_horaria, estado FROM reservas WHERE id_recurso=:id_mesa AND fecha >= CURDATE() ORDER BY fecha, franja_horaria");
+$stmtR->execute([':id_mesa' => $id_mesa]);
+$reservas = $stmtR->fetchAll(PDO::FETCH_ASSOC);
 
 $status = isset($_GET['status']) ? (string)$_GET['status'] : '';
 ?>
@@ -32,8 +40,8 @@ $status = isset($_GET['status']) ? (string)$_GET['status'] : '';
 </head>
 <body class="bg-light">
   <div class="container py-4">
-    <h1 class="mb-3">Nueva Reserva</h1>
-    <p class="text-muted">Selecciona sala, mesa, fecha y franja horaria.</p>
+    <h1 class="mb-3">Reservar Mesa</h1>
+    <p class="text-muted">Mesa: <strong><?= htmlspecialchars($mesa['nombre_mesa']) ?></strong> · Sala: <strong><?= htmlspecialchars($mesa['nombre_sala']) ?></strong></p>
 
     <?php if ($status === 'ok'): ?>
       <div class="alert alert-success">Reserva creada correctamente.</div>
@@ -43,25 +51,9 @@ $status = isset($_GET['status']) ? (string)$_GET['status'] : '';
       <div class="alert alert-danger">Error al crear la reserva.</div>
     <?php endif; ?>
 
-    <form class="card p-3 shadow-sm" method="post" action="../../../private/proc/reservas/crear_reserva.php">
-      <div class="mb-3">
-        <label class="form-label">Sala</label>
-        <select id="sala" name="id_sala" class="form-select" required>
-          <option value="">Selecciona sala</option>
-          <?php foreach ($salas as $s): ?>
-            <option value="<?= (int)$s['id_sala'] ?>"><?= htmlspecialchars($s['nombre_sala']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Mesa</label>
-        <select id="mesa" name="id_mesa" class="form-select" required>
-          <option value="">Selecciona mesa</option>
-        </select>
-      </div>
-
-      <div class="row mb-3">
+    <form class="card p-3 shadow-sm mb-4" method="post" action="../../../private/proc/reservas/crear_reserva.php">
+      <input type="hidden" name="id_mesa" value="<?= (int)$mesa['id_mesa'] ?>">
+      <div class="row g-3 align-items-end">
         <div class="col-md-4">
           <label class="form-label">Fecha</label>
           <input type="date" name="fecha" class="form-control" required>
@@ -71,8 +63,8 @@ $status = isset($_GET['status']) ? (string)$_GET['status'] : '';
           <input type="time" name="hora_inicio" class="form-control" required>
         </div>
         <div class="col-md-4">
-          <label class="form-label">Hora fin</label>
-          <input type="time" name="hora_fin" class="form-control" required>
+          <label class="form-label">Duración</label>
+          <input type="text" class="form-control" value="1h 30min" disabled>
         </div>
       </div>
 
@@ -85,30 +77,38 @@ $status = isset($_GET['status']) ? (string)$_GET['status'] : '';
         <input type="text" name="observaciones" class="form-control" maxlength="255">
       </div>
 
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Reservar</button>
-        <a href="../dashboard.php" class="btn btn-outline-secondary">Volver</a>
+        <a href="../salas.php" class="btn btn-outline-secondary">Volver</a>
       </div>
     </form>
+
+    <div class="card p-3 shadow-sm">
+      <h5 class="mb-3">Reservas futuras para esta mesa</h5>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Franja</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (empty($reservas)): ?>
+              <tr><td colspan="3" class="text-muted">Sin reservas</td></tr>
+            <?php else: foreach ($reservas as $r): ?>
+              <tr>
+                <td><?= htmlspecialchars($r['fecha']) ?></td>
+                <td><?= htmlspecialchars($r['franja_horaria']) ?></td>
+                <td><?= htmlspecialchars($r['estado']) ?></td>
+              </tr>
+            <?php endforeach; endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
-  <script>
-    // Pre-cargar mesas por sala en el cliente
-    const MESAS = <?= json_encode($mesasPorSala) ?>;
-    const salaSel = document.getElementById('sala');
-    const mesaSel = document.getElementById('mesa');
-    salaSel.addEventListener('change', function() {
-      const sid = parseInt(this.value, 10);
-      mesaSel.innerHTML = '<option value="">Selecciona mesa</option>';
-      if (!isNaN(sid) && MESAS[sid]) {
-        MESAS[sid].forEach(m => {
-          const opt = document.createElement('option');
-          opt.value = m.id_mesa;
-          opt.textContent = m.nombre_mesa + ' (' + m.num_sillas + 'p)';
-          mesaSel.appendChild(opt);
-        });
-      }
-    });
-  </script>
 </body>
 </html>
