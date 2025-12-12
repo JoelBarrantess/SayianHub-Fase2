@@ -1,3 +1,23 @@
+# SaiyanHub Fase 2
+
+## Reservas
+
+- Nueva rama: `feature/reservas`.
+- Esquema: tabla `reservas` (ver `private/db/schema.sql`).
+- Páginas:
+	- `public/pages/reservas/reservar.php`: formulario para crear reservas (sala, mesa, fecha, hora inicio/fin).
+	- `public/pages/reservas/listar.php`: listado básico de reservas.
+- Backend:
+	- `private/proc/reservas/crear_reserva.php`: inserta reserva y comprueba conflictos de franja para la misma mesa y fecha.
+
+### Probar
+1. Abrir `public/pages/reservas/reservar.php` y crear una reserva.
+2. Ver en `public/pages/reservas/listar.php`.
+
+### Notas
+- Validación básica de solapamiento por franja horaria.
+- Se usa PDO en todas las consultas.
+- Mantiene coherencia con el proyecto original.
 # Saiyan Hub — Gestión de ocupación de mesas
 
 ## Resumen del proyecto
