@@ -18,24 +18,57 @@ $estado = $_POST['estado'] ?? 'disponible';
 $currentUploadId = isset($_POST['current_id_upload']) && $_POST['current_id_upload'] !== '' ? (int)$_POST['current_id_upload'] : null;
 $removeImage = isset($_POST['remove_image']) && $_POST['remove_image'] === '1';
 
-// Manejo de la imagen
+// Manejo de la imagen siguiendo buenas prácticas de PHP uploads
 $uploadId = null;
-if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-    // Guardar en private/uploads (no accesible directamente desde la web)
-    $uploadDir = __DIR__ . '/../uploads/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-    
-    $originalName = $_FILES['imagen']['name'];
-    $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-    $filename = uniqid('res_') . ($ext ? ('.' . $ext) : '');
-    $destPath = $uploadDir . $filename;
-    
-    if (move_uploaded_file($_FILES['imagen']['tmp_name'], $destPath)) {
-        // Insertar registro en tabla uploads
-        $mime = $_FILES['imagen']['type'] ?? null;
-        $size = (int)($_FILES['imagen']['size'] ?? 0);
+$file = $_FILES['imagen'] ?? null;
+$maxFormSize = isset($_POST['MAX_FILE_SIZE']) ? (int)$_POST['MAX_FILE_SIZE'] : 0;
+
+if ($file && isset($file['error'])) {
+    $error = (int)$file['error'];
+    if ($error === UPLOAD_ERR_OK) {
+        $tmpPath = $file['tmp_name'] ?? '';
+        $originalName = $file['name'] ?? '';
+        $size = (int)($file['size'] ?? 0);
+        $mime = $file['type'] ?? '';
+
+        // Validaciones de extensión y tamaño
+        $parts = explode('.', $originalName);
+        $extension = strtolower(end($parts) ?: '');
+        $allowed = ['jpg','jpeg','gif','png','webp','svg','zip','txt','xls','doc','pdf'];
+        if (!in_array($extension, $allowed, true)) {
+            $_SESSION['edit_user_error'] = 'El archivo es de un tipo no permitido.';
+            header('Location: ../../public/pages/admin/recursos/formulario_recurso.php?id=' . urlencode((string)$id));
+            exit;
+        }
+        if ($maxFormSize > 0 && $size > $maxFormSize) {
+            $_SESSION['edit_user_error'] = 'El fichero excede el tamaño máximo permitido.';
+            header('Location: ../../public/pages/admin/recursos/formulario_recurso.php?id=' . urlencode((string)$id));
+            exit;
+        }
+
+        // Directorio destino privado (no accesible directamente)
+        $uploadDir = __DIR__ . '/../uploads/';
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0775, true)) {
+                $_SESSION['edit_user_error'] = 'No se pudo preparar el directorio de subida.';
+                header('Location: ../../public/pages/admin/recursos/formulario_recurso.php?id=' . urlencode((string)$id));
+                exit;
+            }
+        }
+
+        // Renombrado único para evitar colisiones
+        $baseName = $parts[0] ?? 'upload';
+        $filename = $baseName . '_' . uniqid('', true) . '.' . $extension;
+        $destPath = $uploadDir . $filename;
+
+        // Mover a destino definitivo
+        if (!move_uploaded_file($tmpPath, $destPath)) {
+            $_SESSION['edit_user_error'] = 'Error al mover el fichero subido.';
+            header('Location: ../../public/pages/admin/recursos/formulario_recurso.php?id=' . urlencode((string)$id));
+            exit;
+        }
+
+        // Persistir referencia en tabla uploads
         $pathRel = 'uploads/' . $filename;
         $stmtUp = $conn->prepare("INSERT INTO uploads (filename, path, mime, size, uploaded_by) VALUES (:filename, :path, :mime, :size, :uploaded_by)");
         $stmtUp->execute([
@@ -46,6 +79,25 @@ if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
             ':uploaded_by' => $_SESSION['id_usuario'] ?? null,
         ]);
         $uploadId = (int)$conn->lastInsertId();
+    } elseif ($error !== UPLOAD_ERR_NO_FILE) {
+        // Mapear errores de subida a mensajes amigables
+        $msg = 'Error desconocido en la subida.';
+        switch ($error) {
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                $msg = 'El fichero excede el tamaño máximo permitido.'; break;
+            case UPLOAD_ERR_PARTIAL:
+                $msg = 'El fichero no se subió completamente.'; break;
+            case UPLOAD_ERR_NO_TMP_DIR:
+                $msg = 'Falta la carpeta temporal.'; break;
+            case UPLOAD_ERR_CANT_WRITE:
+                $msg = 'No se pudo escribir el fichero en el disco.'; break;
+            case UPLOAD_ERR_EXTENSION:
+                $msg = 'Subida de fichero detenida por una extensión.'; break;
+        }
+        $_SESSION['edit_user_error'] = $msg;
+        header('Location: ../../public/pages/admin/recursos/formulario_recurso.php?id=' . urlencode((string)$id));
+        exit;
     }
 }
 
@@ -73,6 +125,7 @@ try {
                 $stmtSel->execute([':id' => $currentUploadId]);
                 $up = $stmtSel->fetch(PDO::FETCH_ASSOC);
                 if ($up && !empty($up['path'])) {
+                    // archivo está en private/uploads
                     $full = __DIR__ . '/../' . $up['path'];
                     if (is_file($full)) { @unlink($full); }
                 }

@@ -69,6 +69,7 @@ if ($id) {
                         <input type="hidden" name="id_recurso" value="<?= $id ?>">
                         <input type="hidden" name="current_id_upload" value="<?= htmlspecialchars($recurso['id_upload'] ?? '') ?>">
                         
+                           <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
                         <!-- Nombre -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nombre del Recurso</label>
@@ -105,11 +106,11 @@ if ($id) {
                         <!-- Imagen -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Imagen del Recurso</label>
-                            <input type="file" name="imagen" class="form-control" accept="image/*">
+                               <input type="file" class="form-control" id="imagen" name="imagen" accept=".jpg,.jpeg,.png,.gif,.webp,.svg,.txt,.zip,.xls,.doc,.pdf">
                             <?php if (!empty($recurso['upload_path'])): ?>
                                 <div class="mt-2">
                                     <small class="text-muted">Imagen actual:</small><br>
-                                    <img src="../../../serve_image.php?p=<?= rawurlencode($recurso['upload_path']) ?>" alt="Actual" style="height: 80px; border-radius: 4px; margin-top: 5px;">
+                                    <img src="../../../<?= htmlspecialchars($recurso['upload_path']) ?>" alt="Actual" style="height: 80px; border-radius: 4px; margin-top: 5px;">
                                     <div class="form-check mt-2">
                                         <input class="form-check-input" type="checkbox" value="1" id="removeImage" name="remove_image">
                                         <label class="form-check-label" for="removeImage">
